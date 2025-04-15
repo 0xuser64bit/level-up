@@ -123,6 +123,10 @@
   }
 }
 
+body {
+  margin: 0;
+  background: linear-gradient(160deg, #0f0e17 0%, #1b1a2e 50%, #2e1a47 100%);
+}
 /* Terminal and sci-fi specific styles */
 .terminal {
   @apply rounded-md p-4 font-mono text-sm;
@@ -238,4 +242,33 @@
 .glow-text-yellow {
   @apply animate-glow-pulse;
   --glow-color: rgba(252, 238, 9, 1);
+}
+
+@keyframes fadeInOut {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 0.6; }
+}
+
+@keyframes glitch {
+  0% { transform: translate(0); text-shadow: 0 0 0 transparent; }
+  2% { transform: translate(-2px, 2px); text-shadow: -2px 0 #0ff; }
+  4% { transform: translate(2px, -2px); text-shadow: 2px 0 #f0f; }
+  6% { transform: translate(0); text-shadow: 0 0 0 transparent; }
+  100% { transform: translate(0); text-shadow: 0 0 0 transparent; }
+}
+
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  50%, 100% { transform: translateY(100%); }
+}
+
+@keyframes pulse-border {
+  0%, 100% { border-color: rgba(59, 130, 246, 0.3); }
+  50% { border-color: rgba(139, 92, 246, 0.6); }
+}
+
+@keyframes progress {
+  0% { width: 5%; transform: translateX(-100%); }
+  50% { width: 60%; }
+  100% { width: 5%; transform: translateX(1000%); }
 }
