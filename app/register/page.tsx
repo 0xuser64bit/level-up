@@ -1,18 +1,31 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Terminal, TerminalLine } from "@/components/ui/terminal";
-// import { registerUser } from "@/app/actions"
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function RegisterPage() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  useEffect(() => {
+    if (error) {
+      setTimeout(() => {
+        setError(null);
+      }, 1500);
+    }
+  }, [error]);
 
   const handleSubmit = async (formData: FormData) => {
+    const username = formData.get("username") as string;
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+    if (!email || !password || !username) {
+      setError("All fields are required");
+      return;
+    }
     setIsLoading(true);
     setError(null);
 
@@ -63,7 +76,6 @@ export default function RegisterPage() {
               name="username"
               type="text"
               autoComplete="username"
-              required
               className="cyber-input"
               disabled={isLoading}
             />
@@ -78,7 +90,6 @@ export default function RegisterPage() {
               name="email"
               type="email"
               autoComplete="email"
-              required
               className="cyber-input"
               disabled={isLoading}
             />
@@ -96,7 +107,6 @@ export default function RegisterPage() {
               name="password"
               type="password"
               autoComplete="new-password"
-              required
               className="cyber-input"
               disabled={isLoading}
             />

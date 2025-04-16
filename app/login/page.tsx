@@ -5,13 +5,26 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Terminal, TerminalLine } from "@/components/ui/terminal";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  useEffect(() => {
+    if (error) {
+      setTimeout(() => {
+        setError(null);
+      }, 1500);
+    }
+  }, [error]);
 
   const handleSubmit = async (formData: FormData) => {
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+    if (!email || !password) {
+      setError("Email and password are required");
+      return;
+    }
     setIsLoading(true);
     setError(null);
 
@@ -54,7 +67,6 @@ export default function LoginPage() {
               name="email"
               type="email"
               autoComplete="email"
-              required
               className="cyber-input"
               disabled={isLoading}
             />
@@ -72,7 +84,6 @@ export default function LoginPage() {
               name="password"
               type="password"
               autoComplete="current-password"
-              required
               className="cyber-input"
               disabled={isLoading}
             />
@@ -86,7 +97,7 @@ export default function LoginPage() {
 
           <Button
             type="submit"
-            className="cyber-button w-full"
+            className="cyber-button w-full cursor-pointer"
             disabled={isLoading}
           >
             {isLoading ? "Authenticating..." : "Login"}
