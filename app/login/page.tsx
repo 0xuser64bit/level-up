@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Terminal, TerminalLine } from "@/components/ui/terminal";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { loginUser } from "../actions/user";
 
 export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
@@ -29,7 +30,12 @@ export default function LoginPage() {
     setError(null);
 
     try {
-      console.log(formData);
+      const { status, message } = await loginUser(email, password);
+      if (status !== 200) {
+        setError(message);
+        return;
+      }
+      alert("User logged in successfully");
     } catch (err) {
       setError("An unexpected error occurred");
     } finally {

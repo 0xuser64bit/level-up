@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Terminal, TerminalLine } from "@/components/ui/terminal";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { registerUser } from "../actions/user";
 
 export default function RegisterPage() {
   const [error, setError] = useState<string | null>(null);
@@ -30,7 +31,12 @@ export default function RegisterPage() {
     setError(null);
 
     try {
-      console.log(formData);
+      const { status, message } = await registerUser(username, email, password);
+      if (status !== 200) {
+        setError(message);
+        return;
+      }
+      alert("User created successfully");
     } catch (err) {
       setError("An unexpected error occurred");
     } finally {
