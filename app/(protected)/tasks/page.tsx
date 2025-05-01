@@ -1,5 +1,6 @@
 "use client";
 
+import SystemLoader from "@/components/loader/system-loader";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -32,7 +33,7 @@ import { Terminal, TerminalLine } from "@/components/ui/terminal";
 import { Textarea } from "@/components/ui/textarea";
 import { getDemoTasks, getDemoUser } from "@/lib/demo-data";
 import { Edit, PlusCircle, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function TasksPage() {
   // Todo: replace with real data
@@ -53,6 +54,7 @@ function TasksClient({
   const [isCreating, setIsCreating] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [currentTask, setCurrentTask] = useState<any>(null);
+  const [mounted, setMounted] = useState(false);
 
   const handleCreate = async (formData: FormData) => {
     formData.append("userId", userId.toString());
@@ -75,6 +77,17 @@ function TasksClient({
     setCurrentTask(task);
     setIsEditing(true);
   };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setMounted(true);
+    }, 1500);
+    return () => clearInterval(interval);
+  }, []);
+
+  if (!mounted) {
+    return <SystemLoader hunterLevel="E" />;
+  }
 
   return (
     <div className="space-y-6">

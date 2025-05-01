@@ -1,9 +1,14 @@
+"use client";
+
+import SystemLoader from "@/components/loader/system-loader";
 import { Terminal, TerminalLine } from "@/components/ui/terminal";
 import { getDemoProgress, getDemoUser } from "@/lib/demo-data";
+import { useEffect, useState } from "react";
 
 export default function ProfilePage() {
   const user = getDemoUser();
   const progress = getDemoProgress();
+  const [mounted, setMounted] = useState(false);
 
   // Calculate next level XP
   const nextLevelXP = progress.level * 100;
@@ -12,6 +17,15 @@ export default function ProfilePage() {
   const levelProgress =
     ((progress.xp - currentLevelXP) / (nextLevelXP - currentLevelXP)) * 100;
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setMounted(true);
+    }, 1500);
+    return () => clearInterval(interval);
+  }, []);
+  if (!mounted) {
+    return <SystemLoader hunterLevel="E" />;
+  }
   return (
     <div className="space-y-6">
       <h1 className="cyber-heading text-2xl md:text-3xl">Subject Profile</h1>

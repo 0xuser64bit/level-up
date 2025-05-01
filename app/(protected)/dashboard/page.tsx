@@ -1,6 +1,9 @@
+"use client";
+
 import { MissionBriefing } from "@/components/dashboard/mission-briefing";
 import { TaskCard } from "@/components/dashboard/task-card";
 import { XPDisplay } from "@/components/dashboard/xp-display";
+import SystemLoader from "@/components/loader/system-loader";
 import { Terminal, TerminalLine } from "@/components/ui/terminal";
 import {
   getDemoDailyMission,
@@ -9,16 +12,30 @@ import {
   getDemoUser,
 } from "@/lib/demo-data";
 import { format } from "date-fns";
+import { useEffect, useState } from "react";
 
 export default function DashboardPage() {
+  // Todo: replace with real data
   const user = getDemoUser();
   const progress = getDemoProgress();
   const dailyTasks = getDemoDailyTasks();
   const mission = getDemoDailyMission();
   const today = format(new Date(), "yyyy-MM-dd");
+  const [mounted, setMounted] = useState(false);
 
   const allTasksCompleted =
     dailyTasks.length > 0 && dailyTasks.every((task) => task.is_completed);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setMounted(true);
+    }, 1500);
+    return () => clearInterval(interval);
+  }, []);
+
+  if (!mounted) {
+    return <SystemLoader hunterLevel="E" />;
+  }
 
   return (
     <div className="space-y-6">
