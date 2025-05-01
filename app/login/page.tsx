@@ -7,10 +7,12 @@ import { Terminal, TerminalLine } from "@/components/ui/terminal";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { loginUser } from "../actions/user";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
   useEffect(() => {
     if (error) {
       setTimeout(() => {
@@ -35,7 +37,7 @@ export default function LoginPage() {
         setError(message);
         return;
       }
-      alert("User logged in successfully");
+      router.push("/dashboard");
     } catch (err) {
       setError("An unexpected error occurred");
     } finally {
