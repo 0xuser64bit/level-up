@@ -14,15 +14,27 @@ export const metadata: Metadata = {
     default: "Level Up | Rise from E to S Rank",
     template: "%s | Level Up SYSTEM",
   },
-  description: "A Solo Leveling inspired productivity SYSTEM that helps you track your daily quests, gain experience, and evolve from E to S rank through consistent habit development.",
-  keywords: ["level up", "solo leveling", "SYSTEM", "productivity", "habits", "daily quests", "rank up", "personal growth", "gamified productivity"],
+  description:
+    "A Solo Leveling inspired productivity SYSTEM that helps you track your daily quests, gain experience, and evolve from E to S rank through consistent habit development.",
+  keywords: [
+    "level up",
+    "solo leveling",
+    "SYSTEM",
+    "productivity",
+    "habits",
+    "daily quests",
+    "rank up",
+    "personal growth",
+    "gamified productivity",
+  ],
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "/",
     siteName: "LEVEL UP SYSTEM",
     title: "Level Up | Rise from E to S Rank",
-    description: "A Solo Leveling inspired productivity SYSTEM that helps you track your daily quests, gain experience, and evolve from E to S rank through consistent habit development.",
+    description:
+      "A Solo Leveling inspired productivity SYSTEM that helps you track your daily quests, gain experience, and evolve from E to S rank through consistent habit development.",
     images: [
       {
         url: "/level-up.png",

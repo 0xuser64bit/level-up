@@ -6,7 +6,7 @@ import {
   getDemoDailyMission,
   getDemoDailyTasks,
   getDemoProgress,
-  getDemoUser
+  getDemoUser,
 } from "@/lib/demo-data";
 import { format } from "date-fns";
 
@@ -95,7 +95,7 @@ export default function DashboardPage() {
                   ? Math.round(
                       (dailyTasks.filter((task) => task.is_completed).length /
                         dailyTasks.length) *
-                        100
+                        100,
                     )
                   : 0}
                 %

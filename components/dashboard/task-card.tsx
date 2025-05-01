@@ -58,7 +58,7 @@ export function TaskCard({
         "cyber-panel transition-all duration-300",
         isCompleted && "opacity-70 border-cyber-teal/30",
         isSideQuest && !isCompleted && "border-cyber-yellow/50",
-        !isCompleted && !isSideQuest && "border-cyber-blue/30"
+        !isCompleted && !isSideQuest && "border-cyber-blue/30",
       )}
     >
       <CardHeader className="pb-2">
@@ -69,8 +69,8 @@ export function TaskCard({
               isCompleted
                 ? "text-cyber-teal line-through"
                 : isSideQuest
-                ? "text-cyber-yellow"
-                : "text-cyber-blue"
+                  ? "text-cyber-yellow"
+                  : "text-cyber-blue",
             )}
           >
             {title}
@@ -80,7 +80,7 @@ export function TaskCard({
               "px-2 py-1 rounded text-xs font-mono uppercase",
               isSideQuest
                 ? "bg-cyber-yellow/10 text-cyber-yellow"
-                : "bg-cyber-blue/10 text-cyber-blue"
+                : "bg-cyber-blue/10 text-cyber-blue",
             )}
           >
             {isSideQuest ? "Side Quest" : "Task"}
@@ -102,7 +102,7 @@ export function TaskCard({
         <div className="text-sm font-mono">
           <span
             className={cn(
-              isSideQuest ? "text-cyber-yellow" : "text-cyber-blue"
+              isSideQuest ? "text-cyber-yellow" : "text-cyber-blue",
             )}
           >
             +{xpReward} XP
@@ -116,8 +116,8 @@ export function TaskCard({
             isCompleted
               ? "text-cyber-teal hover:text-cyber-teal/80"
               : isSideQuest
-              ? "text-cyber-yellow hover:text-cyber-yellow/80"
-              : "text-cyber-blue hover:text-cyber-blue/80"
+                ? "text-cyber-yellow hover:text-cyber-yellow/80"
+                : "text-cyber-blue hover:text-cyber-blue/80",
           )}
           onClick={handleToggle}
           disabled={isPending}

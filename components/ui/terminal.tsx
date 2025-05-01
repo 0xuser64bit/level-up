@@ -53,7 +53,7 @@ export function TerminalLine({
         "mb-1",
         isPrompt && "terminal-prompt",
         typing && "overflow-hidden whitespace-nowrap animate-terminal-typing",
-        className
+        className,
       )}
       {...props}
     >

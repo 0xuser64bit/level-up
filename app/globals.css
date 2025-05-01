@@ -138,7 +138,8 @@ body {
     transparent 1px
   );
   background-size: 100% 2px;
-  box-shadow: 0 0 15px rgba(12, 255, 225, 0.2),
+  box-shadow:
+    0 0 15px rgba(12, 255, 225, 0.2),
     inset 0 0 15px rgba(12, 255, 225, 0.1);
 }
 
@@ -195,7 +196,8 @@ body {
   @apply rounded-md p-4;
   background-color: rgba(0, 2, 18, 0.8);
   border: 1px solid rgba(12, 255, 225, 0.3);
-  box-shadow: 0 0 15px rgba(12, 255, 225, 0.1),
+  box-shadow:
+    0 0 15px rgba(12, 255, 225, 0.1),
     inset 0 0 15px rgba(12, 255, 225, 0.05);
 }
 
@@ -245,30 +247,68 @@ body {
 }
 
 @keyframes fadeInOut {
-  0%, 100% { opacity: 0; }
-  50% { opacity: 0.6; }
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.6;
+  }
 }
 
 @keyframes glitch {
-  0% { transform: translate(0); text-shadow: 0 0 0 transparent; }
-  2% { transform: translate(-2px, 2px); text-shadow: -2px 0 #0ff; }
-  4% { transform: translate(2px, -2px); text-shadow: 2px 0 #f0f; }
-  6% { transform: translate(0); text-shadow: 0 0 0 transparent; }
-  100% { transform: translate(0); text-shadow: 0 0 0 transparent; }
+  0% {
+    transform: translate(0);
+    text-shadow: 0 0 0 transparent;
+  }
+  2% {
+    transform: translate(-2px, 2px);
+    text-shadow: -2px 0 #0ff;
+  }
+  4% {
+    transform: translate(2px, -2px);
+    text-shadow: 2px 0 #f0f;
+  }
+  6% {
+    transform: translate(0);
+    text-shadow: 0 0 0 transparent;
+  }
+  100% {
+    transform: translate(0);
+    text-shadow: 0 0 0 transparent;
+  }
 }
 
 @keyframes scanline {
-  0% { transform: translateY(-100%); }
-  50%, 100% { transform: translateY(100%); }
+  0% {
+    transform: translateY(-100%);
+  }
+  50%,
+  100% {
+    transform: translateY(100%);
+  }
 }
 
 @keyframes pulse-border {
-  0%, 100% { border-color: rgba(59, 130, 246, 0.3); }
-  50% { border-color: rgba(139, 92, 246, 0.6); }
+  0%,
+  100% {
+    border-color: rgba(59, 130, 246, 0.3);
+  }
+  50% {
+    border-color: rgba(139, 92, 246, 0.6);
+  }
 }
 
 @keyframes progress {
-  0% { width: 5%; transform: translateX(-100%); }
-  50% { width: 60%; }
-  100% { width: 5%; transform: translateX(1000%); }
+  0% {
+    width: 5%;
+    transform: translateX(-100%);
+  }
+  50% {
+    width: 60%;
+  }
+  100% {
+    width: 5%;
+    transform: translateX(1000%);
+  }
 }

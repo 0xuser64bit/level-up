@@ -6,7 +6,7 @@ import { compare, hash } from "@/utils/scrypt";
 export const registerUser = async (
   username: string,
   email: string,
-  password: string
+  password: string,
 ) => {
   const existingUser = await db.user.findUnique({
     where: {
