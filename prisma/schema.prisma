@@ -15,10 +15,57 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  username  String   @unique
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id             String        @id @default(cuid())
+  username       String        @unique
+  email          String        @unique
+  level          Int
+  xp             Int
+  current_streak Int
+  longest_streak Int
+  password       String
+  missions       Mission[]
+  achievements   Achievement[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model Mission {
+  id            String            @id @default(cuid())
+  title         String
+  description   String
+  xp_reward     Int
+  penalty       Int
+  recurring     Boolean
+  pattern       RecurrencePattern
+  User          User?             @relation(fields: [userId], references: [username])
+  userId        String?
+  is_completed  Boolean           @default(false)
+  completed_at  DateTime?
+  is_side_quest Boolean           @default(false)
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+}
+
+model Achievement {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  User        User?    @relation(fields: [userId], references: [username])
+  userId      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum RecurrencePattern {
+  NONE
+  DAILY
+  WEEKDAYS
+  WEEKENDS
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
 }
