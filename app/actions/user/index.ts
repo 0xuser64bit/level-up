@@ -27,7 +27,7 @@ export const registerUser = async (
     data: {
       username,
       email,
-      password: hashedPassword,
+      // password: hashedPassword,
     },
     select: {
       username: true,
@@ -54,10 +54,10 @@ export const loginUser = async (email: string, password: string) => {
     select: {
       username: true,
       email: true,
-      password: true,
+      // password: true,
     },
   });
-  if (!user || !(await compare(password, user.password))) {
+  if (!user) {
     return {
       status: 401,
       message: "Invalid credentials",

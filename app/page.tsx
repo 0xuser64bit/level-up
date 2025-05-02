@@ -3,7 +3,7 @@
 import { CyberArrow } from "@/components/cyber-arrow";
 import { Button } from "@/components/ui/button";
 import { Terminal, TerminalLine } from "@/components/ui/terminal";
-import Link from "next/link";
+import { signIn } from "next-auth/react";
 
 export default function Home() {
   return (
@@ -39,16 +39,17 @@ export default function Home() {
           </Terminal>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/login" className="w-full sm:w-auto">
-              <Button className="cyber-button w-full cursor-pointer">
-                Login
-              </Button>
-            </Link>
-            <Link href="/register" className="w-full sm:w-auto">
-              <Button className="cyber-button w-full cursor-pointer">
-                Register
-              </Button>
-            </Link>
+            <Button
+              className="cyber-button w-full cursor-pointer"
+              onClick={async () => {
+                await signIn("google", {
+                  redirect: true,
+                  callbackUrl: "/select-username",
+                });
+              }}
+            >
+              Accept Challenge & Level Up
+            </Button>
           </div>
         </div>
       </main>

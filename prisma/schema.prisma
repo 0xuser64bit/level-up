@@ -16,13 +16,12 @@ datasource db {
 
 model User {
   id             String        @id @default(cuid())
-  username       String        @unique
+  username       String?       @unique
   email          String        @unique
-  level          Int
-  xp             Int
-  current_streak Int
-  longest_streak Int
-  password       String
+  level          Int?          @default(1)
+  xp             Int?          @default(0)
+  current_streak Int?          @default(0)
+  longest_streak Int?          @default(0)
   missions       Mission[]
   achievements   Achievement[]
   createdAt      DateTime      @default(now())

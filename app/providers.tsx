@@ -2,6 +2,7 @@
 
 import { ThemeProvider } from "next-themes";
 import { useEffect, useState } from "react";
+import { SessionProvider } from "next-auth/react";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
@@ -13,8 +14,10 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     return null;
   }
   return (
-    <ThemeProvider attribute="class" defaultTheme="" enableSystem={true}>
-      {children}
-    </ThemeProvider>
+    <SessionProvider refetchInterval={0}>
+      <ThemeProvider attribute="class" defaultTheme="" enableSystem={true}>
+        {children}
+      </ThemeProvider>
+    </SessionProvider>
   );
 }
