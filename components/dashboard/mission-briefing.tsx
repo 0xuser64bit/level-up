@@ -1,17 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { Terminal, TerminalLine } from "@/components/ui/terminal";
 import { Button } from "@/components/ui/button";
+import { completeMission } from "@/app/actions/daily";
 
 interface MissionBriefingProps {
-  id: number;
+  id: string;
   title: string;
   description: string;
   xpReward: number;
   isCompleted: boolean;
-  userId: number;
-  date: string;
   allTasksCompleted: boolean;
 }
 
@@ -21,27 +21,22 @@ export function MissionBriefing({
   description,
   xpReward,
   isCompleted,
-  userId,
-  date,
   allTasksCompleted,
 }: MissionBriefingProps) {
-  const [isPending, setIsPending] = useState(false);
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
 
-  const handleComplete = async () => {
-    setIsPending(true);
-
-    const formData = new FormData();
-    formData.append("missionId", id.toString());
-    formData.append("userId", userId.toString());
-    formData.append("xpReward", xpReward.toString());
-    formData.append("date", date);
-
-    console.log("missionId", id);
-    console.log("userId", userId);
-    console.log("xpReward", xpReward);
-    console.log("date", date);
-
-    setIsPending(false);
+  const handleComplete = () => {
+    setError(null);
+    startTransition(async () => {
+      const res = await completeMission(id);
+      if (!res.ok) {
+        setError(res.error);
+        return;
+      }
+      router.refresh();
+    });
   };
 
   return (
@@ -62,6 +57,10 @@ export function MissionBriefing({
       <TerminalLine className="text-cyber-yellow">
         Reward: +{xpReward} XP
       </TerminalLine>
+
+      {error && (
+        <p className="mt-2 text-xs font-mono text-cyber-pink">{error}</p>
+      )}
 
       <div className="mt-4 flex justify-end">
         {isCompleted ? (

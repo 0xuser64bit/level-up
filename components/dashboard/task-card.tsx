@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { CheckCircle, Circle, Clock } from "lucide-react";
 import {
   Card,
@@ -12,16 +13,14 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-// import { toggleTaskCompletion } from "@/app/actions";
+import { toggleDailyTask } from "@/app/actions/daily";
 
 interface TaskCardProps {
-  id: number;
+  id: string;
   title: string;
   description?: string | null;
   isCompleted: boolean;
   xpReward: number;
-  userId: number;
-  date: string;
   isSideQuest?: boolean;
 }
 
@@ -31,25 +30,22 @@ export function TaskCard({
   description,
   isCompleted,
   xpReward,
-  userId,
-  date,
   isSideQuest = false,
 }: TaskCardProps) {
-  const [isPending, setIsPending] = useState(false);
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
 
-  const handleToggle = async () => {
-    setIsPending(true);
-
-    const formData = new FormData();
-    formData.append("dailyTaskId", id.toString());
-    formData.append("userId", userId.toString());
-    formData.append("isCompleted", isCompleted.toString());
-    formData.append("xpReward", xpReward.toString());
-    formData.append("date", date);
-
-    // await toggleTaskCompletion(formData);
-
-    setIsPending(false);
+  const handleToggle = () => {
+    setError(null);
+    startTransition(async () => {
+      const res = await toggleDailyTask(id);
+      if (!res.ok) {
+        setError(res.error);
+        return;
+      }
+      router.refresh();
+    });
   };
 
   return (
@@ -97,6 +93,9 @@ export function TaskCard({
           <Clock className="w-4 h-4 mr-1 text-muted-foreground" />
           <span className="text-muted-foreground">Due today</span>
         </div>
+        {error && (
+          <p className="mt-2 text-xs font-mono text-cyber-pink">{error}</p>
+        )}
       </CardContent>
       <CardFooter className="flex justify-between pt-2 border-t border-border">
         <div className="text-sm font-mono">
@@ -130,7 +129,7 @@ export function TaskCard({
           ) : (
             <>
               <Circle className="w-4 h-4 mr-1" />
-              Mark Complete
+              {isPending ? "Saving..." : "Mark Complete"}
             </>
           )}
         </Button>

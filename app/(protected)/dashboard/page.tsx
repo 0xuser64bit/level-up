@@ -1,41 +1,24 @@
-"use client";
-
+import { format } from "date-fns";
 import { MissionBriefing } from "@/components/dashboard/mission-briefing";
 import { TaskCard } from "@/components/dashboard/task-card";
 import { XPDisplay } from "@/components/dashboard/xp-display";
-import SystemLoader from "@/components/loader/system-loader";
 import { Terminal, TerminalLine } from "@/components/ui/terminal";
-import {
-  getDemoDailyMission,
-  getDemoDailyTasks,
-  getDemoProgress,
-  getDemoUser,
-} from "@/lib/demo-data";
-import { format } from "date-fns";
-import { useEffect, useState } from "react";
+import { getTodayBoard } from "@/lib/board";
+import { xpToNextLevel } from "@/lib/leveling";
+import { requireOnboardedUser } from "@/lib/session";
 
-export default function DashboardPage() {
-  // Todo: replace with real data
-  const user = getDemoUser();
-  const progress = getDemoProgress();
-  const dailyTasks = getDemoDailyTasks();
-  const mission = getDemoDailyMission();
-  const today = format(new Date(), "yyyy-MM-dd");
-  const [mounted, setMounted] = useState(false);
+export default async function DashboardPage() {
+  const user = await requireOnboardedUser();
+  const { dailyTasks, mission } = await getTodayBoard(user.id);
 
+  const completed = dailyTasks.filter((t) => t.isCompleted);
   const allTasksCompleted =
-    dailyTasks.length > 0 && dailyTasks.every((task) => task.is_completed);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setMounted(true);
-    }, 1500);
-    return () => clearInterval(interval);
-  }, []);
-
-  if (!mounted) {
-    return <SystemLoader hunterLevel="E" />;
-  }
+    dailyTasks.length > 0 && completed.length === dailyTasks.length;
+  const xpEarnedToday = completed.reduce((sum, t) => sum + t.xpReward, 0);
+  const completionRate =
+    dailyTasks.length > 0
+      ? Math.round((completed.length / dailyTasks.length) * 100)
+      : 0;
 
   return (
     <div className="space-y-6">
@@ -43,20 +26,15 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
-          {mission && (
-            <MissionBriefing
-              id={mission.id}
-              title={mission.title}
-              description={mission.description}
-              xpReward={mission.xp_reward}
-              isCompleted={mission.is_completed}
-              userId={user.id}
-              date={today}
-              allTasksCompleted={allTasksCompleted}
-            />
-          )}
+          <MissionBriefing
+            id={mission.id}
+            title={mission.title}
+            description={mission.description}
+            xpReward={mission.xpReward}
+            isCompleted={mission.isCompleted}
+            allTasksCompleted={allTasksCompleted}
+          />
 
-          {/* Daily Tasks */}
           <Terminal title="TASK LIST" className="mb-6">
             <TerminalLine className="mb-2">
               Current date:{" "}
@@ -67,72 +45,64 @@ export default function DashboardPage() {
             <TerminalLine className="mb-4">
               Tasks requiring completion:{" "}
               <span className="text-cyber-blue">
-                {dailyTasks.filter((task) => !task.is_completed).length}
+                {dailyTasks.length - completed.length}
               </span>
             </TerminalLine>
           </Terminal>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {dailyTasks.map((task) => (
-              <TaskCard
-                key={task.id}
-                id={task.id}
-                title={task.title}
-                description={task.description}
-                isCompleted={task.is_completed}
-                xpReward={task.xp_reward}
-                userId={user.id}
-                date={today}
-                isSideQuest={task.is_side_quest}
-              />
-            ))}
-          </div>
+          {dailyTasks.length === 0 ? (
+            <Terminal>
+              <TerminalLine className="text-white/70">
+                No tasks scheduled for today. Define your protocols in{" "}
+                <span className="text-cyber-blue">Task Management</span> to begin
+                leveling up.
+              </TerminalLine>
+            </Terminal>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {dailyTasks.map((task) => (
+                <TaskCard
+                  key={task.id}
+                  id={task.id}
+                  title={task.title}
+                  description={task.description}
+                  isCompleted={task.isCompleted}
+                  xpReward={task.xpReward}
+                  isSideQuest={task.isSideQuest}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
         <div>
           <XPDisplay
-            xp={progress.xp}
-            level={progress.level}
-            streak={progress.current_streak}
-            longestStreak={progress.longest_streak}
+            xp={user.xp}
+            level={user.level}
+            streak={user.currentStreak}
+            longestStreak={user.longestStreak}
           />
 
           <Terminal title="PERFORMANCE METRICS">
             <TerminalLine className="mb-2 text-white/70">
               Tasks completed today:{" "}
               <span className="text-cyber-blue">
-                {dailyTasks.filter((task) => task.is_completed).length}/
-                {dailyTasks.length}
+                {completed.length}/{dailyTasks.length}
               </span>
             </TerminalLine>
             <TerminalLine className="mb-2 text-white/70">
               Completion rate:{" "}
-              <span className="text-cyber-blue">
-                {dailyTasks.length > 0
-                  ? Math.round(
-                      (dailyTasks.filter((task) => task.is_completed).length /
-                        dailyTasks.length) *
-                        100,
-                    )
-                  : 0}
-                %
-              </span>
+              <span className="text-cyber-blue">{completionRate}%</span>
             </TerminalLine>
             <TerminalLine className="mb-2 text-white/70">
               XP earned today:{" "}
-              <span className="text-cyber-blue">
-                +
-                {dailyTasks
-                  .filter((task) => task.is_completed)
-                  .reduce((sum, task) => sum + task.xp_reward, 0)}{" "}
-                XP
-              </span>
+              <span className="text-cyber-blue">+{xpEarnedToday} XP</span>
             </TerminalLine>
             <TerminalLine className="mb-2 text-white/70">
               Next level:{" "}
-              <span className="text-cyber-blue">{progress.level + 1}</span>{" "}
+              <span className="text-cyber-blue">{user.level + 1}</span>{" "}
               <span className="text-white/50">
-                ({progress.level * 100 - progress.xp} XP needed)
+                ({xpToNextLevel(user.xp)} XP needed)
               </span>
             </TerminalLine>
           </Terminal>

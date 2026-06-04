@@ -1,17 +1,20 @@
 import type React from "react";
 import { Header } from "@/components/layout/header";
-import { getDemoUser } from "@/lib/demo-data";
+import { requireOnboardedUser } from "@/lib/session";
 
-export default function DashboardLayout({
+export default async function ProtectedLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const user = getDemoUser();
+  const user = await requireOnboardedUser();
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header username={user.username} />
+      <Header
+        username={user.username as string}
+        subjectId={user.id.slice(-6).toUpperCase()}
+      />
       <main className="flex-1 container py-6">{children}</main>
       <footer className="border-t border-border py-4">
         <div className="container flex justify-center">

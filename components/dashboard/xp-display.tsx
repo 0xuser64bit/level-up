@@ -1,4 +1,5 @@
 import { Terminal, TerminalLine } from "@/components/ui/terminal";
+import { levelProgressPct, rankFromLevel } from "@/lib/leveling";
 
 interface XPDisplayProps {
   xp: number;
@@ -13,14 +14,17 @@ export function XPDisplay({
   streak,
   longestStreak,
 }: XPDisplayProps) {
-  // Calculate progress to next level (simple formula: 100 XP per level)
-  const nextLevelXP = level * 100;
-  const currentLevelXP = (level - 1) * 100;
-  const progress =
-    ((xp - currentLevelXP) / (nextLevelXP - currentLevelXP)) * 100;
+  const progress = levelProgressPct(xp);
+  const rank = rankFromLevel(level);
 
   return (
     <Terminal title="SUBJECT STATUS" className="mb-6">
+      <div className="flex items-center justify-between mb-4">
+        <TerminalLine className="text-white/70">Hunter Rank:</TerminalLine>
+        <span className="text-cyber-yellow glow-text-yellow text-3xl font-display tracking-widest">
+          {rank}
+        </span>
+      </div>
       <div className="grid grid-cols-2 gap-4 mb-4">
         <div>
           <TerminalLine className="text-white/70">Level:</TerminalLine>

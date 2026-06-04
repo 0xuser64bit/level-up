@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, User } from "lucide-react";
+import { signOut } from "next-auth/react";
+import { LogOut, Menu, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -16,9 +17,10 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 interface HeaderProps {
   username: string;
+  subjectId: string;
 }
 
-export function Header({ username }: HeaderProps) {
+export function Header({ username, subjectId }: HeaderProps) {
   const pathname = usePathname();
 
   const routes = [
@@ -71,7 +73,7 @@ export function Header({ username }: HeaderProps) {
                       {username}
                     </p>
                     <p className="text-xs leading-none text-muted-foreground">
-                      Subject ID: #{Math.floor(Math.random() * 10000)}
+                      Subject ID: #{subjectId}
                     </p>
                   </div>
                 </DropdownMenuLabel>
@@ -81,6 +83,14 @@ export function Header({ username }: HeaderProps) {
                     <User className="mr-2 h-4 w-4" />
                     <span>Profile</span>
                   </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="cursor-pointer text-cyber-pink focus:text-cyber-pink"
+                  onClick={() => signOut({ callbackUrl: "/" })}
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Sign out</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
