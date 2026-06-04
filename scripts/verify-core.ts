@@ -93,7 +93,9 @@ async function main() {
   const remaining = await db.dailyTask.count({
     where: { userId: user.id, date: today, isCompleted: false },
   });
-  console.log(`Mission claimable: ${remaining === 0 ? "yes" : `no (${remaining} left)`}`);
+  console.log(
+    `Mission claimable: ${remaining === 0 ? "yes" : `no (${remaining} left)`}`,
+  );
 }
 
 main()

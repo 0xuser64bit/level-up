@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono } from "next/font/google";
 import type React from "react";
 import "./globals.css";
@@ -9,7 +9,12 @@ const mono = JetBrains_Mono({
   variable: "--font-mono",
 });
 
+export const viewport: Viewport = {
+  themeColor: "#000000",
+};
+
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXTAUTH_URL ?? "http://localhost:3000"),
   title: {
     default: "Level Up | Rise from E to S Rank",
     template: "%s | Level Up SYSTEM",
@@ -52,7 +57,6 @@ export const metadata: Metadata = {
   creator: "Level Up SYSTEM",
   category: "Productivity",
   applicationName: "Level Up SYSTEM",
-  themeColor: "#000000",
 };
 
 export default function RootLayout({

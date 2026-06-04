@@ -54,8 +54,8 @@ export default async function DashboardPage() {
             <Terminal>
               <TerminalLine className="text-white/70">
                 No tasks scheduled for today. Define your protocols in{" "}
-                <span className="text-cyber-blue">Task Management</span> to begin
-                leveling up.
+                <span className="text-cyber-blue">Task Management</span> to
+                begin leveling up.
               </TerminalLine>
             </Terminal>
           ) : (

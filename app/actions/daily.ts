@@ -64,7 +64,9 @@ export async function toggleDailyTask(
 
 // Complete the daily mission for its bonus XP. Server-guarded: requires every
 // one of the day's tasks to be done and refuses double-claims.
-export async function completeMission(missionId: string): Promise<ActionResult> {
+export async function completeMission(
+  missionId: string,
+): Promise<ActionResult> {
   const user = await getCurrentUser();
   if (!user) return { ok: false, error: "Unauthorized" };
 

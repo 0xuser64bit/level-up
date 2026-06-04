@@ -48,7 +48,10 @@ export function UsernameForm() {
 
         <form action={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="username" className="text-sm font-mono text-white/70">
+            <Label
+              htmlFor="username"
+              className="text-sm font-mono text-white/70"
+            >
               Username
             </Label>
             <Input

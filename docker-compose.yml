@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: level_up
+    ports:
+      - "5432:5432"
+    volumes:
+      - level_up_pgdata:/var/lib/postgresql/data
+
+volumes:
+  level_up_pgdata:

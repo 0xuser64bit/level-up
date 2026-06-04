@@ -104,7 +104,10 @@ export function TasksClient({ initialTasks }: { initialTasks: TaskRow[] }) {
                 Create New Task
               </DialogTitle>
             </DialogHeader>
-            <form action={(fd) => run(() => createTask(fd))} className="space-y-4 mt-4">
+            <form
+              action={(fd) => run(() => createTask(fd))}
+              className="space-y-4 mt-4"
+            >
               <TaskFields />
               {error && (
                 <p className="text-sm font-mono text-cyber-pink">{error}</p>
@@ -115,7 +118,11 @@ export function TasksClient({ initialTasks }: { initialTasks: TaskRow[] }) {
                     Cancel
                   </Button>
                 </DialogClose>
-                <Button type="submit" className="cyber-button" disabled={isPending}>
+                <Button
+                  type="submit"
+                  className="cyber-button"
+                  disabled={isPending}
+                >
                   {isPending ? "Saving..." : "Create Task"}
                 </Button>
               </DialogFooter>
@@ -123,13 +130,21 @@ export function TasksClient({ initialTasks }: { initialTasks: TaskRow[] }) {
           </DialogContent>
         </Dialog>
 
-        <Dialog open={!!editing} onOpenChange={(open) => !open && setEditing(null)}>
+        <Dialog
+          open={!!editing}
+          onOpenChange={(open) => !open && setEditing(null)}
+        >
           <DialogContent className="cyber-panel">
             <DialogHeader>
-              <DialogTitle className="cyber-heading text-xl">Edit Task</DialogTitle>
+              <DialogTitle className="cyber-heading text-xl">
+                Edit Task
+              </DialogTitle>
             </DialogHeader>
             {editing && (
-              <form action={(fd) => run(() => updateTask(fd))} className="space-y-4 mt-4">
+              <form
+                action={(fd) => run(() => updateTask(fd))}
+                className="space-y-4 mt-4"
+              >
                 <input type="hidden" name="taskId" value={editing.id} />
                 <TaskFields task={editing} />
                 {error && (
@@ -141,7 +156,11 @@ export function TasksClient({ initialTasks }: { initialTasks: TaskRow[] }) {
                       Cancel
                     </Button>
                   </DialogClose>
-                  <Button type="submit" className="cyber-button" disabled={isPending}>
+                  <Button
+                    type="submit"
+                    className="cyber-button"
+                    disabled={isPending}
+                  >
                     {isPending ? "Saving..." : "Update Task"}
                   </Button>
                 </DialogFooter>
@@ -169,10 +188,18 @@ export function TasksClient({ initialTasks }: { initialTasks: TaskRow[] }) {
           <TableHeader>
             <TableRow>
               <TableHead className="font-mono text-cyber-blue">Title</TableHead>
-              <TableHead className="font-mono text-cyber-blue">Description</TableHead>
-              <TableHead className="font-mono text-cyber-blue">XP Reward</TableHead>
-              <TableHead className="font-mono text-cyber-blue">Recurring</TableHead>
-              <TableHead className="font-mono text-cyber-blue">Pattern</TableHead>
+              <TableHead className="font-mono text-cyber-blue">
+                Description
+              </TableHead>
+              <TableHead className="font-mono text-cyber-blue">
+                XP Reward
+              </TableHead>
+              <TableHead className="font-mono text-cyber-blue">
+                Recurring
+              </TableHead>
+              <TableHead className="font-mono text-cyber-blue">
+                Pattern
+              </TableHead>
               <TableHead className="font-mono text-cyber-blue w-[100px]">
                 Actions
               </TableHead>
@@ -200,10 +227,14 @@ export function TasksClient({ initialTasks }: { initialTasks: TaskRow[] }) {
                         task.description
                       )
                     ) : (
-                      <span className="text-muted-foreground/50">No description</span>
+                      <span className="text-muted-foreground/50">
+                        No description
+                      </span>
                     )}
                   </TableCell>
-                  <TableCell className="text-cyber-blue">+{task.xpReward} XP</TableCell>
+                  <TableCell className="text-cyber-blue">
+                    +{task.xpReward} XP
+                  </TableCell>
                   <TableCell>
                     {task.recurring ? (
                       <span className="text-cyber-teal">Yes</span>
@@ -265,7 +296,10 @@ function TaskFields({ task }: { task?: TaskRow }) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="description" className="text-sm font-mono text-white/70">
+        <Label
+          htmlFor="description"
+          className="text-sm font-mono text-white/70"
+        >
           Description
         </Label>
         <Textarea
@@ -313,7 +347,10 @@ function TaskFields({ task }: { task?: TaskRow }) {
             value="true"
             defaultChecked={task?.recurring}
           />
-          <Label htmlFor="recurring" className="text-sm font-mono text-white/70">
+          <Label
+            htmlFor="recurring"
+            className="text-sm font-mono text-white/70"
+          >
             Recurring
           </Label>
         </div>
@@ -324,7 +361,10 @@ function TaskFields({ task }: { task?: TaskRow }) {
             value="true"
             defaultChecked={task?.isSideQuest}
           />
-          <Label htmlFor="isSideQuest" className="text-sm font-mono text-white/70">
+          <Label
+            htmlFor="isSideQuest"
+            className="text-sm font-mono text-white/70"
+          >
             Side Quest
           </Label>
         </div>

@@ -52,13 +52,17 @@ export default async function ProfilePage() {
               </TerminalLine>
             </div>
             <div>
-              <TerminalLine className="text-white/70">Hunter Rank:</TerminalLine>
+              <TerminalLine className="text-white/70">
+                Hunter Rank:
+              </TerminalLine>
               <TerminalLine className="text-cyber-yellow glow-text-yellow font-bold text-xl">
                 {rank}
               </TerminalLine>
             </div>
             <div>
-              <TerminalLine className="text-white/70">Current Level:</TerminalLine>
+              <TerminalLine className="text-white/70">
+                Current Level:
+              </TerminalLine>
               <TerminalLine className="text-cyber-yellow glow-text-yellow font-bold">
                 {level}
               </TerminalLine>
@@ -75,7 +79,9 @@ export default async function ProfilePage() {
         <Terminal title="PROGRESS ANALYSIS">
           <div className="space-y-4">
             <div>
-              <TerminalLine className="text-white/70">Level Progress:</TerminalLine>
+              <TerminalLine className="text-white/70">
+                Level Progress:
+              </TerminalLine>
               <div className="w-full bg-white/10 rounded-full h-2.5 mb-2">
                 <div
                   className="bg-cyber-blue h-2.5 rounded-full"
@@ -87,25 +93,33 @@ export default async function ProfilePage() {
               </TerminalLine>
             </div>
             <div>
-              <TerminalLine className="text-white/70">Tasks Completed:</TerminalLine>
+              <TerminalLine className="text-white/70">
+                Tasks Completed:
+              </TerminalLine>
               <TerminalLine className="text-cyber-teal font-bold">
                 {completedCount}
               </TerminalLine>
             </div>
             <div>
-              <TerminalLine className="text-white/70">Current Streak:</TerminalLine>
+              <TerminalLine className="text-white/70">
+                Current Streak:
+              </TerminalLine>
               <TerminalLine className="text-cyber-teal font-bold">
                 {user.currentStreak} days
               </TerminalLine>
             </div>
             <div>
-              <TerminalLine className="text-white/70">Longest Streak:</TerminalLine>
+              <TerminalLine className="text-white/70">
+                Longest Streak:
+              </TerminalLine>
               <TerminalLine className="text-cyber-teal font-bold">
                 {user.longestStreak} days
               </TerminalLine>
             </div>
             <div>
-              <TerminalLine className="text-white/70">System Assessment:</TerminalLine>
+              <TerminalLine className="text-white/70">
+                System Assessment:
+              </TerminalLine>
               <TerminalLine className="text-cyber-blue">
                 Subject shows {level < 3 ? "minimal" : "acceptable"} progress.
                 {user.currentStreak > 3
