@@ -44,7 +44,7 @@ export default function Home() {
               onClick={async () => {
                 await signIn("google", {
                   redirect: true,
-                  callbackUrl: "/select-username",
+                  callbackUrl: "/dashboard",
                 });
               }}
             >
