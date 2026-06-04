@@ -1,8 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// Level Up — Prisma schema
+// Postgres in all environments. Client is generated into ../generated/prisma.
 
 generator client {
   provider = "prisma-client-js"
@@ -14,45 +11,99 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// A registered hunter. Created on first Google sign-in; `username` is chosen
+// during onboarding (/select-username) and is the public handle.
 model User {
-  id             String        @id @default(cuid())
-  username       String?       @unique
-  email          String        @unique
-  level          Int?          @default(1)
-  xp             Int?          @default(0)
-  current_streak Int?          @default(0)
-  longest_streak Int?          @default(0)
-  missions       Mission[]
-  achievements   Achievement[]
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+  id            String   @id @default(cuid())
+  email         String   @unique
+  name          String? // display name from the OAuth provider
+  image         String? // avatar url from the OAuth provider
+  username      String?  @unique // chosen during onboarding
+
+  xp            Int      @default(0)
+  level         Int      @default(1)
+  currentStreak Int      @default(0)
+  longestStreak Int      @default(0)
+  lastActiveAt  DateTime? // last day a task was completed (for streaks)
+
+  tasks      Task[]
+  dailyTasks DailyTask[]
+  missions   Mission[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-model Mission {
-  id            String            @id @default(cuid())
-  title         String
-  description   String
-  xp_reward     Int
-  penalty       Int
-  recurring     Boolean
-  pattern       RecurrencePattern
-  User          User?             @relation(fields: [userId], references: [username])
-  userId        String?
-  is_completed  Boolean           @default(false)
-  completed_at  DateTime?
-  is_side_quest Boolean           @default(false)
-  createdAt     DateTime          @default(now())
-  updatedAt     DateTime          @updatedAt
+// A task template owned by a user. Recurring templates spawn DailyTask
+// instances each day; non-recurring templates spawn one instance.
+model Task {
+  id          String            @id @default(cuid())
+  userId      String
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  title       String
+  description String?
+  xpReward    Int               @default(10)
+  penalty     Int               @default(0)
+  recurring   Boolean           @default(false)
+  pattern     RecurrencePattern @default(NONE)
+  isSideQuest Boolean           @default(false)
+
+  dailyTasks DailyTask[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }
 
-model Achievement {
+// A concrete instance of a task for a specific calendar day. This is what the
+// user actually checks off on the dashboard. XP/penalty are snapshotted so
+// editing a template later doesn't rewrite history.
+model DailyTask {
   id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  taskId      String? // null for ad-hoc side quests with no template
+  task        Task?    @relation(fields: [taskId], references: [id], onDelete: SetNull)
+
+  title       String
+  description String?
+  xpReward    Int
+  penalty     Int      @default(0)
+  isSideQuest Boolean  @default(false)
+
+  date        DateTime @db.Date // the day this instance belongs to
+  isCompleted Boolean  @default(false)
+  completedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([taskId, date]) // one instance per template per day
+  @@index([userId, date])
+}
+
+// The daily meta-goal: complete all of today's tasks for a bonus. One row per
+// user per day, created lazily alongside the day's DailyTasks.
+model Mission {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   title       String
   description String
-  User        User?    @relation(fields: [userId], references: [username])
-  userId      String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  xpReward    Int      @default(50)
+
+  date        DateTime @db.Date
+  isCompleted Boolean  @default(false)
+  completedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, date])
+  @@index([userId, date])
 }
 
 enum RecurrencePattern {
