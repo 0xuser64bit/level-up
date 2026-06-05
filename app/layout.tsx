@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { JetBrains_Mono } from "next/font/google";
+import { JetBrains_Mono, Orbitron } from "next/font/google";
 import type React from "react";
 import "./globals.css";
 import ThemeProvider from "./providers";
@@ -7,6 +7,15 @@ import ThemeProvider from "./providers";
 const mono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
+});
+
+// Display face for the brand mark and all `.cyber-heading` / `font-display`
+// usage. Previously `--font-display` was never defined, so every heading
+// silently fell back to a system font.
+const display = Orbitron({
+  subsets: ["latin"],
+  variable: "--font-display",
+  weight: ["400", "500", "600", "700", "800", "900"],
 });
 
 export const viewport: Viewport = {
@@ -65,8 +74,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={`${mono.className}`}>
+    <html
+      lang="en"
+      className={`dark ${mono.variable} ${display.variable}`}
+      suppressHydrationWarning
+    >
+      <body className="font-mono antialiased">
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>

@@ -25,15 +25,15 @@ export default function SystemLoader({ hunterLevel }: { hunterLevel: string }) {
           ></div>
         ))}
       </div>
-      <div className="relative text-center z-10 p-8 backdrop-blur-sm bg-black/40 border border-highlight/20 rounded-md animate-[pulse-border_4s_infinite]">
+      <div className="relative text-center z-10 p-8 backdrop-blur-sm bg-black/40 border border-cyber-blue/20 rounded-md animate-[pulse-border_4s_infinite]">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="w-full h-0.5 bg-gradient-to-r from-transparent via-highlight/30 to-transparent absolute top-0 left-0 animate-[scanline_4s_linear_infinite]"></div>
+          <div className="w-full h-0.5 bg-gradient-to-r from-transparent via-cyber-blue/30 to-transparent absolute top-0 left-0 animate-[scanline_4s_linear_infinite]"></div>
         </div>
-        <div className="text-highlight text-2xl md:text-5xl font-mono tracking-widest mb-4 relative">
+        <div className="text-cyber-blue text-2xl md:text-5xl font-mono tracking-widest mb-4 relative">
           <span className="inline-block animate-[glitch_5s_infinite] bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
             SYSTEM
           </span>
-          <span className="inline-block ml-3 animate-[glitch_7s_infinite_1s] text-highlight">
+          <span className="inline-block ml-3 animate-[glitch_7s_infinite_1s] text-cyber-blue">
             CALIBRATING
           </span>
         </div>
@@ -61,12 +61,12 @@ export default function SystemLoader({ hunterLevel }: { hunterLevel: string }) {
             </span>
           </div>
         </div>
-        <div className="mt-6 p-1.5 border border-highlight/30 inline-block rounded-md relative group">
+        <div className="mt-6 p-1.5 border border-cyber-blue/30 inline-block rounded-md relative group">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-md opacity-0 group-hover:opacity-100 transition-opacity"></div>
-          <div className="text-xs text-highlight/80 font-mono uppercase tracking-widest animate-pulse">
+          <div className="text-xs text-cyber-blue/80 font-mono uppercase tracking-widest animate-pulse">
             GATE OPENING
           </div>
-          <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-highlight/50 group-hover:w-full transition-all duration-1000"></div>
+          <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-cyber-blue/50 group-hover:w-full transition-all duration-1000"></div>
         </div>
       </div>
     </div>
