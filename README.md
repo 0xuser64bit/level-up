@@ -25,6 +25,19 @@ them off to earn XP, build streaks, and climb the hunter ranks (E → S).
 - **XP / level / streak / rank** — all computed server-side in `lib/leveling.ts`
   (unit-tested). Level = `floor(xp / 100) + 1`; rank is derived from level.
   Clients never set their own XP.
+- **Daily settlement** (`lib/settlement.ts`) — when you return, the SYSTEM judges
+  every day that has fully elapsed since your last visit: it deducts the
+  snapshotted penalty for each missed quest, breaks your streak honestly, and
+  shows a one-time **Daily Assessment**. Penalties never drop you below your
+  current level's floor, so a hard-won rank is never stripped (level/rank only
+  ever climb). Settlement is idempotent — each missed quest is stamped
+  `settledAt` so it can never be charged twice. Runs on any protected page load;
+  no cron required.
+- **Feedback layer** — completing quests fires optimistic checks, floating
+  `+XP`, toasts, achievement unlocks, and full-screen level-up / rank-up
+  celebrations (`components/feedback/system-feedback.tsx`).
+- **Activity log** — a 30-day consistency heatmap on the profile
+  (`lib/stats.ts`).
 
 ## Getting started
 
@@ -63,7 +76,9 @@ bun run dev                  # http://localhost:3000
 
 ## Known limitations
 
-- **Penalties** are captured per task but not yet auto-applied for missed tasks —
-  that needs a scheduled job (cron) which isn't wired up.
-- **Streak/day boundaries** use the server's local day; multi-timezone
-  correctness is not handled yet.
+- **Time zones.** Day boundaries (settlement, streaks, the daily board) use the
+  server's local day. Per-user time zones aren't handled yet — a user far from
+  the server's zone may see a day roll over at an unexpected hour.
+- **Settlement is visit-driven.** Penalties apply the next time you open the app,
+  not at midnight. For real-time enforcement (e.g. a leaderboard) you'd add a
+  cron that calls `settleUser` for all users; the logic is already idempotent.

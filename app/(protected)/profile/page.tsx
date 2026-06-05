@@ -1,3 +1,4 @@
+import { ActivityHeatmap } from "@/components/profile/activity-heatmap";
 import { Terminal, TerminalLine } from "@/components/ui/terminal";
 import {
   computeAchievements,
@@ -7,14 +8,16 @@ import {
   xpToNextLevel,
 } from "@/lib/leveling";
 import { requireOnboardedUser } from "@/lib/session";
+import { getActivity } from "@/lib/stats";
 import { cn } from "@/lib/utils";
 import db from "@/lib/db";
 
 export default async function ProfilePage() {
   const user = await requireOnboardedUser();
-  const completedCount = await db.dailyTask.count({
-    where: { userId: user.id, isCompleted: true },
-  });
+  const [completedCount, activity] = await Promise.all([
+    db.dailyTask.count({ where: { userId: user.id, isCompleted: true } }),
+    getActivity(user.id, 30),
+  ]);
 
   const level = levelFromXp(user.xp);
   const rank = rankFromLevel(level);
@@ -128,6 +131,13 @@ export default async function ProfilePage() {
               </TerminalLine>
             </div>
           </div>
+        </Terminal>
+
+        <Terminal title="ACTIVITY LOG" className="lg:col-span-2">
+          <TerminalLine className="text-white/70 mb-3">
+            Consistency map — full days glow, missed days bleed red.
+          </TerminalLine>
+          <ActivityHeatmap activity={activity} />
         </Terminal>
 
         <Terminal title="ACHIEVEMENTS" className="lg:col-span-2">
