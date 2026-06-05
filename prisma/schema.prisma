@@ -26,6 +26,12 @@ model User {
   longestStreak Int      @default(0)
   lastActiveAt  DateTime? // last day a task was completed (for streaks)
 
+  // Consequence engine. `lastSettledDate` is the last day fully judged by the
+  // SYSTEM; `pendingAssessment` holds the one-time "Daily Assessment" verdict
+  // (see lib/settlement.ts) shown on next visit until acknowledged.
+  lastSettledDate   DateTime? @db.Date
+  pendingAssessment Json?
+
   tasks      Task[]
   dailyTasks DailyTask[]
   missions   Mission[]
@@ -76,6 +82,7 @@ model DailyTask {
   date        DateTime @db.Date // the day this instance belongs to
   isCompleted Boolean  @default(false)
   completedAt DateTime?
+  settledAt   DateTime? // when the SYSTEM judged this instance as missed (penalty applied)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

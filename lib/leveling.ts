@@ -36,14 +36,47 @@ export function rankFromLevel(level: number): Rank {
   return "E";
 }
 
-// Apply an XP delta (can be negative for penalties) and recompute level.
-// XP is floored at 0 so a user can never go negative.
+// Apply an XP delta (can be negative) and recompute level. XP is floored at 0.
+// Used for completing/un-completing your own tasks, where reversing an action
+// may legitimately move you back across a level boundary.
 export function applyXpDelta(
   xp: number,
   delta: number,
 ): { xp: number; level: number } {
   const next = Math.max(0, xp + delta);
   return { xp: next, level: levelFromXp(next) };
+}
+
+// Cumulative XP at the start of a given level (the level's lower bound).
+export function levelFloorXp(level: number): number {
+  return (Math.max(1, level) - 1) * LEVEL_XP_SPAN;
+}
+
+// Apply a penalty (missed-task punishment). XP dips *within* the current level
+// but never below the level's floor, so the SYSTEM never strips a rank you've
+// already earned (product decision: level/rank only ever climb). Returns the
+// actual XP removed after flooring so the UI can report the true cost.
+export function applyPenalty(
+  xp: number,
+  level: number,
+  penalty: number,
+): { xp: number; level: number; xpLost: number } {
+  const floor = levelFloorXp(level);
+  const next = Math.max(floor, xp - Math.max(0, penalty));
+  return { xp: next, level, xpLost: xp - next };
+}
+
+// An honest current-streak value given the last active day. A streak is only
+// "alive" if the user was active today or yesterday; any larger gap means the
+// chain is already broken, regardless of the last stored count.
+export function settledStreak(
+  currentStreak: number,
+  lastActiveAt: Date | null,
+  now: Date,
+): number {
+  if (!lastActiveAt) return 0;
+  const gap = differenceInCalendarDays(startOfDay(now), startOfDay(lastActiveAt));
+  return gap <= 1 ? currentStreak : 0;
 }
 
 export interface StreakState {
