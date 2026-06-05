@@ -1,21 +1,20 @@
 "use client";
 
 import { ThemeProvider } from "next-themes";
-import { useEffect, useState } from "react";
 import { SessionProvider } from "next-auth/react";
 
+// The System is a dark-only interface. We render children immediately (no
+// mount gate) so the server-rendered HTML is the first paint — the previous
+// `mounted ? children : null` guard blanked the entire app until hydration.
 export default function Providers({ children }: { children: React.ReactNode }) {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return null;
-  }
   return (
     <SessionProvider refetchInterval={0}>
-      <ThemeProvider attribute="class" defaultTheme="" enableSystem={true}>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="dark"
+        forcedTheme="dark"
+        enableSystem={false}
+      >
         {children}
       </ThemeProvider>
     </SessionProvider>

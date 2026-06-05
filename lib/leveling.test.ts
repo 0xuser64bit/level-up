@@ -1,10 +1,13 @@
 import { describe, expect, it } from "bun:test";
 import {
+  applyPenalty,
   applyXpDelta,
   computeAchievements,
+  levelFloorXp,
   levelFromXp,
   levelProgressPct,
   rankFromLevel,
+  settledStreak,
   updateStreakOnActivity,
   xpToNextLevel,
 } from "./leveling";
@@ -47,6 +50,48 @@ describe("applyXpDelta", () => {
   });
   it("floors at zero on penalty", () => {
     expect(applyXpDelta(10, -50)).toEqual({ xp: 0, level: 1 });
+  });
+});
+
+describe("levelFloorXp", () => {
+  it("returns the lower XP bound of a level", () => {
+    expect(levelFloorXp(1)).toBe(0);
+    expect(levelFloorXp(3)).toBe(200);
+  });
+});
+
+describe("applyPenalty", () => {
+  it("removes XP within the current level", () => {
+    expect(applyPenalty(275, 3, 30)).toEqual({
+      xp: 245,
+      level: 3,
+      xpLost: 30,
+    });
+  });
+  it("never drops below the current level's floor (rank is protected)", () => {
+    // Level 3 floor is 200; a huge penalty can only take you down to 200.
+    expect(applyPenalty(275, 3, 999)).toEqual({
+      xp: 200,
+      level: 3,
+      xpLost: 75,
+    });
+  });
+  it("reports zero loss when already at the floor", () => {
+    expect(applyPenalty(200, 3, 50)).toEqual({ xp: 200, level: 3, xpLost: 0 });
+  });
+});
+
+describe("settledStreak", () => {
+  const now = new Date("2026-06-05T10:00:00");
+  it("is zero when there was never any activity", () => {
+    expect(settledStreak(9, null, now)).toBe(0);
+  });
+  it("keeps the streak when active today or yesterday", () => {
+    expect(settledStreak(9, new Date("2026-06-05T08:00:00"), now)).toBe(9);
+    expect(settledStreak(9, new Date("2026-06-04T08:00:00"), now)).toBe(9);
+  });
+  it("breaks the streak after a fully missed day", () => {
+    expect(settledStreak(9, new Date("2026-06-03T08:00:00"), now)).toBe(0);
   });
 });
 

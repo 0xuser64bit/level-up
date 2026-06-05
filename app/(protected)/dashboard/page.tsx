@@ -1,15 +1,19 @@
 import { format } from "date-fns";
+import { DailyAssessment } from "@/components/dashboard/daily-assessment";
 import { MissionBriefing } from "@/components/dashboard/mission-briefing";
+import { QuickAddQuest } from "@/components/dashboard/quick-add-quest";
 import { TaskCard } from "@/components/dashboard/task-card";
 import { XPDisplay } from "@/components/dashboard/xp-display";
 import { Terminal, TerminalLine } from "@/components/ui/terminal";
 import { getTodayBoard } from "@/lib/board";
 import { xpToNextLevel } from "@/lib/leveling";
+import type { Assessment } from "@/lib/settlement";
 import { requireOnboardedUser } from "@/lib/session";
 
 export default async function DashboardPage() {
   const user = await requireOnboardedUser();
   const { dailyTasks, mission } = await getTodayBoard(user.id);
+  const assessment = user.pendingAssessment as Assessment | null;
 
   const completed = dailyTasks.filter((t) => t.isCompleted);
   const allTasksCompleted =
@@ -22,6 +26,8 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-6">
+      {assessment && <DailyAssessment assessment={assessment} />}
+
       <h1 className="cyber-heading text-2xl md:text-3xl">Daily Operations</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -49,6 +55,8 @@ export default async function DashboardPage() {
               </span>
             </TerminalLine>
           </Terminal>
+
+          <QuickAddQuest />
 
           {dailyTasks.length === 0 ? (
             <Terminal>

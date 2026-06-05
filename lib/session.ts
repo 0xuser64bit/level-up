@@ -1,6 +1,7 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
+import { settleUser } from "@/lib/settlement";
 import db from "@/lib/db";
 
 export function getSession() {
@@ -15,10 +16,12 @@ export async function getCurrentUser() {
 }
 
 // Use in protected server components. Redirects to landing if signed out and to
-// onboarding if the user hasn't picked a username yet.
+// onboarding if the user hasn't picked a username yet. Runs daily settlement so
+// every protected page sees an honest, judged user (penalties applied, streak
+// decayed). settleUser is idempotent and short-circuits once judged for the day.
 export async function requireOnboardedUser() {
   const user = await getCurrentUser();
   if (!user) redirect("/");
   if (!user.username) redirect("/select-username");
-  return user;
+  return settleUser(user);
 }
