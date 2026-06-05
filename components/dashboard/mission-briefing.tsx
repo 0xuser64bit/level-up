@@ -4,6 +4,8 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Terminal, TerminalLine } from "@/components/ui/terminal";
 import { Button } from "@/components/ui/button";
+import { useSystemFeedback } from "@/components/feedback/system-feedback";
+import { rankFromLevel } from "@/lib/leveling";
 import { completeMission } from "@/app/actions/daily";
 
 interface MissionBriefingProps {
@@ -24,6 +26,7 @@ export function MissionBriefing({
   allTasksCompleted,
 }: MissionBriefingProps) {
   const router = useRouter();
+  const { notify, celebrate } = useSystemFeedback();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
@@ -34,6 +37,17 @@ export function MissionBriefing({
       if (!res.ok) {
         setError(res.error);
         return;
+      }
+      notify({
+        title: `Mission Complete · +${res.xpDelta} XP`,
+        variant: "achievement",
+      });
+      if (res.leveledUp || res.rankUp) {
+        celebrate({
+          level: res.level,
+          rank: rankFromLevel(res.level),
+          rankUp: res.rankUp !== null,
+        });
       }
       router.refresh();
     });

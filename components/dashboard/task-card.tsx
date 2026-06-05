@@ -12,6 +12,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useSystemFeedback } from "@/components/feedback/system-feedback";
+import { rankFromLevel } from "@/lib/leveling";
 import { cn } from "@/lib/utils";
 import { toggleDailyTask } from "@/app/actions/daily";
 
@@ -33,16 +35,46 @@ export function TaskCard({
   isSideQuest = false,
 }: TaskCardProps) {
   const router = useRouter();
+  const { notify, celebrate } = useSystemFeedback();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  // Optimistic completion so the checkbox responds instantly; reconciled by the
+  // server re-render that router.refresh() triggers.
+  const [optimistic, setOptimistic] = useState(isCompleted);
+  const [floatXp, setFloatXp] = useState<number | null>(null);
+
+  const done = optimistic;
 
   const handleToggle = () => {
+    if (isPending) return;
     setError(null);
+    const next = !optimistic;
+    setOptimistic(next);
     startTransition(async () => {
       const res = await toggleDailyTask(id);
       if (!res.ok) {
+        setOptimistic(!next); // revert
         setError(res.error);
         return;
+      }
+      if (res.completed) {
+        setFloatXp(res.xpDelta);
+        setTimeout(() => setFloatXp(null), 900);
+        notify({ title: `+${res.xpDelta} XP`, variant: "xp" });
+        res.unlocked.forEach((title) =>
+          notify({
+            title: "Achievement Unlocked",
+            description: title,
+            variant: "achievement",
+          }),
+        );
+        if (res.leveledUp || res.rankUp) {
+          celebrate({
+            level: res.level,
+            rank: rankFromLevel(res.level),
+            rankUp: res.rankUp !== null,
+          });
+        }
       }
       router.refresh();
     });
@@ -51,18 +83,23 @@ export function TaskCard({
   return (
     <Card
       className={cn(
-        "cyber-panel transition-all duration-300",
-        isCompleted && "opacity-70 border-cyber-teal/30",
-        isSideQuest && !isCompleted && "border-cyber-yellow/50",
-        !isCompleted && !isSideQuest && "border-cyber-blue/30",
+        "cyber-panel transition-all duration-300 relative",
+        done && "opacity-70 border-cyber-teal/30",
+        isSideQuest && !done && "border-cyber-yellow/50",
+        !done && !isSideQuest && "border-cyber-blue/30",
       )}
     >
+      {floatXp !== null && (
+        <span className="pointer-events-none absolute right-4 top-3 z-10 font-display text-cyber-blue glow-text text-lg animate-[xp-float_0.9s_ease-out_forwards]">
+          +{floatXp}
+        </span>
+      )}
       <CardHeader className="pb-2">
         <div className="flex justify-between items-start">
           <CardTitle
             className={cn(
               "text-lg font-display tracking-wide",
-              isCompleted
+              done
                 ? "text-cyber-teal line-through"
                 : isSideQuest
                   ? "text-cyber-yellow"
@@ -112,7 +149,7 @@ export function TaskCard({
           size="sm"
           className={cn(
             "font-mono text-xs",
-            isCompleted
+            done
               ? "text-cyber-teal hover:text-cyber-teal/80"
               : isSideQuest
                 ? "text-cyber-yellow hover:text-cyber-yellow/80"
@@ -121,7 +158,7 @@ export function TaskCard({
           onClick={handleToggle}
           disabled={isPending}
         >
-          {isCompleted ? (
+          {done ? (
             <>
               <CheckCircle className="w-4 h-4 mr-1" />
               Completed

@@ -43,9 +43,9 @@ export function XPDisplay({
       <TerminalLine className="text-white/70 mb-1">
         Progress to Level {level + 1}:
       </TerminalLine>
-      <div className="w-full bg-white/10 rounded-full h-2.5 mb-4">
+      <div className="w-full bg-white/10 rounded-full h-2.5 mb-4 overflow-hidden">
         <div
-          className="bg-cyber-blue h-2.5 rounded-full"
+          className="bg-cyber-blue h-2.5 rounded-full transition-[width] duration-700 ease-out shadow-[0_0_10px_rgba(12,255,225,0.5)]"
           style={{ width: `${progress}%` }}
         ></div>
       </div>
